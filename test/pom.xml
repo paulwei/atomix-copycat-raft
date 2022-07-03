@@ -51,6 +51,12 @@
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
     </dependency>
+      <dependency>
+          <groupId>io.atomix.copycat</groupId>
+          <artifactId>copycat-value-state-machine-example</artifactId>
+          <version>1.2.9-SNAPSHOT</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>

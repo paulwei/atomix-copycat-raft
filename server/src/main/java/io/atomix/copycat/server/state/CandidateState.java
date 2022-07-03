@@ -31,6 +31,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -111,12 +112,15 @@ final class CandidateState extends ActiveState {
     // to this node will be automatically successful.
     // First check if the quorum is null. If the quorum isn't null then that
     // indicates that another vote is already going on.
-    final Quorum quorum = new Quorum(context.getClusterState().getQuorum(), (elected) -> {
-      complete.set(true);
-      if (elected) {
-        context.transition(CopycatServer.State.LEADER);
-      } else {
-        context.transition(CopycatServer.State.FOLLOWER);
+    final Quorum quorum = new Quorum(context.getClusterState().getQuorum(), new Consumer<Boolean>() {
+      @Override
+      public void accept(Boolean elected) {
+        complete.set(true);
+        if (elected) {
+          context.transition(CopycatServer.State.LEADER);
+        } else {
+          context.transition(CopycatServer.State.FOLLOWER);
+        }
       }
     });
 

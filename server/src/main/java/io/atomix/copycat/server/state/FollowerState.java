@@ -27,6 +27,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -108,13 +109,16 @@ final class FollowerState extends ActiveState {
       return;
     }
 
-    final Quorum quorum = new Quorum(context.getClusterState().getQuorum(), (elected) -> {
-      // If a majority of the cluster indicated they would vote for us then transition to candidate.
-      complete.set(true);
-      if (elected) {
-        context.transition(CopycatServer.State.CANDIDATE);
-      } else {
-        resetHeartbeatTimeout();
+    final Quorum quorum = new Quorum(context.getClusterState().getQuorum(), new Consumer<Boolean>() {
+      @Override
+      public void accept(Boolean elected) {
+        // If a majority of the cluster indicated they would vote for us then transition to candidate.
+        complete.set(true);
+        if (elected) {
+          context.transition(CopycatServer.State.CANDIDATE);
+        } else {
+          FollowerState.this.resetHeartbeatTimeout();
+        }
       }
     });
 
