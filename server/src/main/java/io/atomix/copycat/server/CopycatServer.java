@@ -654,12 +654,15 @@ public class CopycatServer {
                   started = true;
                   future.complete(this);
                 } else {
-                  electionListener = cluster().onLeaderElection(leader -> {
-                    if (electionListener != null) {
-                      started = true;
-                      future.complete(this);
-                      electionListener.close();
-                      electionListener = null;
+                  electionListener = cluster().onLeaderElection(new Consumer<Member>() {
+                    @Override
+                    public void accept(Member leader) {
+                      if (electionListener != null) {
+                        started = true;
+                        future.complete(CopycatServer.this);
+                        electionListener.close();
+                        electionListener = null;
+                      }
                     }
                   });
                 }

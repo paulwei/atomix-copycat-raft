@@ -12,9 +12,7 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 public class AtomixOne {
-
     public static void main(String[] args){
-
         //设置server_1的地址和端口
         Address address = new Address("127.0.0.1", 8001);
         CopycatServer server = CopycatServer.builder(address)
@@ -23,17 +21,14 @@ public class AtomixOne {
                         .withThreads(4)
                         .build())
                 .withStorage(Storage.builder()
-                        .withDirectory(new File("I:\\elecate_leader\\logs"))
+                        .withDirectory(new File("I:\\elecate_leader\\logs"))//全局目录必须相同
                         .withStorageLevel(StorageLevel.DISK)
                         .build())
                 .build();
-
         server.serializer().register(PutCommand.class);
         server.serializer().register(GetQuery.class);
-
         //启动服务器
         CompletableFuture<CopycatServer> future = server.bootstrap();
-        future.join();
-
+        future.join();//挂起主线程
     }
 }

@@ -11,10 +11,8 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 public class AtomixTwo {
-
     public static void main(String[] args){
-
-        //设置server_1的地址和端口
+        //设置server_2的地址和端口
         Address address = new Address("127.0.0.1", 8002);
         CopycatServer server = CopycatServer.builder(address)
                 .withStateMachine(ValueStateMachine::new)
@@ -26,10 +24,8 @@ public class AtomixTwo {
                         .withStorageLevel(StorageLevel.DISK)
                         .build())
                 .build();
-
         server.serializer().register(PutCommand.class);
         server.serializer().register(GetQuery.class);
-
         //启动服务器
         CompletableFuture<CopycatServer> future = server.bootstrap();
         future.join();

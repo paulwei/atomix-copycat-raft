@@ -11,10 +11,8 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 public class AtomixThree {
-
     public static void main(String[] args){
-
-        //设置server_1的地址和端口
+        //设置server_3的地址和端口
         Address address = new Address("127.0.0.1", 8003);
         CopycatServer server = CopycatServer.builder(address)
                 .withStateMachine(ValueStateMachine::new)
